@@ -9,16 +9,9 @@ var program = require('commander')
   .parse(process.argv);
 
 watchFile = function(filename, callback){
-    var isWin = process.platform === 'win32';
-    if (isWin) {
-        fs.watch(filename, function(event) {
-            if (event === 'change') callback(filename);
-        });
-    } else {
-      fs.watchFile(filename, { interval: 200 }, function(curr, prev) {
-          if (curr.mtime > prev.mtime) callback(filename);
-      });
-  }
+    fs.watch(filename, function(event) {
+        if (event === 'change') callback(filename);
+    });
 }
 
 
@@ -75,6 +68,7 @@ var throttle = function(func, wait, immediate) {
 // socket.io
 if(file){
   io.on('connection', function(socket){
+    var fromLocal = true;
     function onFileChanged(file){
       fs.readFile(file, "utf8", function(err, content){
         if(err) return;
@@ -83,17 +77,21 @@ if(file){
     }
 
     socket.on('change', function(content){
-      try{
-        fs.writeFileSync(file, content, "utf8");
-      }catch(e){
+      if(!fromLocal){
+        try{
+          fs.writeFileSync(file, content, "utf8");
+        }catch(e){
 
+        }
+      }else{
+        fromLocal = false;
       }
     });
 
     fs.readFile(file, "utf8", function(err, content){
       if(err) return;
       socket.emit("change", content);
-      watchFile(file, throttle(onFileChanged,200));
+      watchFile(file, onFileChanged, 200);
     })
 
     

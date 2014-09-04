@@ -1,6 +1,6 @@
 {
   "name": "stackit",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "description": "fork stackedit as a local editor",
   "main": "res/main.js",
   "engines": {

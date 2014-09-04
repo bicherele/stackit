@@ -6,7 +6,10 @@ stackit is a simple fork form [stackedit.io](stackedit.io). to make it as a loca
 you can edit markdown on either local editor or launched browser, it will be synchronized by [socket.io](socket
 .io)
 
+
+
 # Usage
+
 
 
 ```shell
@@ -20,6 +23,11 @@ stackit path/to/README.md
 
 1. stackedit is awesome, but it is not a local editor
 2. people may like editing markdown local(like me), but live preview on web. 
+
+
+## WARNING
+
+haven't test on Windows now.
 
 
 ## License
