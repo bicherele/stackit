@@ -335,9 +335,6 @@ define([
 			var content = publisher.applyTemplate(fileDesc, undefined, currentHTML);
 			utils.saveAs(content, fileDesc.title + (settings.template.indexOf("documentHTML") === -1 ? ".md" : ".html"));
 		});
-		var monetize = new MonetizeJS({
-			applicationID: 'ESTHdCYOi18iLhhO'
-		});
 		$(".action-download-pdf").click(function() {
 			var fileDesc = fileMgr.currentFile;
 			var content = publisher.applyTemplate(fileDesc, {
@@ -354,10 +351,6 @@ define([
 					$('.modal-sponsor-only').modal('show');
 					return task.chain();
 				}
-				monetize.getTokenImmediate(function(err, result) {
-					token = result;
-					task.chain();
-				});
 			});
 			task.onRun(function() {
 				if(!token) {

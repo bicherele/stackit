@@ -1,0 +1,84 @@
+#!/usr/bin/env node
+var path = require("path");
+var fs = require("fs");
+var exec = require("child_process").exec;
+
+var program = require('commander')
+  .version('0.0.1')
+  .usage('[options]')
+  .parse(process.argv);
+
+watchFile = function(filename, callback){
+    var isWin = process.platform === 'win32';
+    if (isWin) {
+        fs.watch(filename, function(event) {
+            if (event === 'change') callback(filename);
+        });
+    } else {
+      fs.watchFile(filename, { interval: 200 }, function(curr, prev) {
+          if (curr.mtime > prev.mtime) callback(filename);
+      });
+  }
+}
+
+
+
+
+var file = program.args[0];
+
+if(file) file = path.join(process.cwd(), file);
+
+var server = require("../server.js");
+
+var io = require('socket.io')(server);
+
+var openBrowser = function (target, callback){
+    var map = {
+      'darwin': 'open',
+      'win32': 'start '
+    }
+    var opener = map[process.platform] || 'xdg-open'  
+    exec( opener  + " " + target ,  callback);
+}
+
+// socket.io
+if(file){
+  io.on('connection', function(socket){
+    function onFileChanged(file){
+      fs.readFile(file, "utf8", function(err, content){
+        if(err) return;
+        socket.emit("change", content);
+      })
+    }
+
+    socket.on('change', function(content){
+      try{
+        fs.writeFileSync(file, content, "utf8");
+      }catch(e){
+
+      }
+    });
+
+    fs.readFile(file, "utf8", function(err, content){
+      if(err) return;
+      socket.emit("change", content);
+      watchFile(file, onFileChanged);
+    })
+
+    
+    server.socket = socket;
+  });
+}
+
+
+
+server.listen(3000, function(){
+  console.log('listening on *:3000');
+  openBrowser("http://localhost:3000" ,function(){})
+});
+
+
+
+
+
+

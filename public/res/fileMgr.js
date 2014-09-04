@@ -136,9 +136,22 @@ define([
         });
     };
 
+
+    var socket = window.io();
+    eventMgr.addListener("onContentChanged", function(file, content){
+        socket.emit("change" , content);
+    });
     eventMgr.addListener("onReady", function() {
         var $editorElt = $("#wmd-input");
         fileMgr.selectFile();
+        window.fileMgr = fileMgr;
+
+        socket.on("change", function(content){
+            console.log(fileMgr.currentFile);
+            eventMgr.onContentChanged(fileMgr.currentFile, content);
+            
+        });
+
 
         var $fileTitleElt = $('.file-title-navbar');
         var $fileTitleInputElt = $(".input-file-title");

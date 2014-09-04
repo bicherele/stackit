@@ -201,7 +201,6 @@ require([
 	"eventMgr",
 	"synchronizer",
 	"publisher",
-	"mediaImporter",
 	"css",
 	"rangy-cssclassapplier",
 	themeModule,
@@ -227,5 +226,7 @@ require([
 			}, false);
 		}
 	});
+
+
 
 });

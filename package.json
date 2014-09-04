@@ -1,8 +1,7 @@
 {
-  "name": "stackedit",
-  "version": "4.0.2",
-  "private": true,
-  "description": "StackEdit is a free, open-source Markdown editor based on PageDown, the Markdown library used by Stack Overflow and the other Stack Exchange sites.",
+  "name": "stackit",
+  "version": "0.0.1",
+  "description": "fork stackedit as a local editor",
   "main": "res/main.js",
   "engines": {
     "node": "0.10.x"
@@ -10,10 +9,15 @@
   "directories": {
     "doc": "doc"
   },
+  "bin": {
+    "stackit": "./bin/stackit"
+  },  
   "dependencies": {
-    "express": "~3.16.6",
+    "commander": "^2.3.0",
     "ejs": "~0.8.4",
+    "express": "~3.16.6",
     "request": "~2.40.0",
+    "socket.io": "^1.0.6",
     "ssh2": "^0.3.5"
   },
   "devDependencies": {
@@ -30,13 +34,6 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/benweet/stackedit.git"
-  },
   "author": "Benoit Schweblin",
-  "license": "Apache License",
-  "bugs": {
-    "url": "https://github.com/benweet/stackedit/issues"
-  }
+  "license": "Apache License"
 }
