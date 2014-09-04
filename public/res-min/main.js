@@ -25928,9 +25928,22 @@ function() {
 			return t.has(n.publishLocations, e)
 		})
 	};
-	var p = window.io();
+	var p, h = function(e, t, n) {
+			var i, r, o, a = null,
+				s = 0,
+				l = function() {
+					s = new Date, a = null, o = e.apply(i, r)
+				};
+			return function() {
+				var c = new Date;
+				s || n !== !1 || (s = c);
+				var u = t - (c - s);
+				return i = this, r = arguments, 0 >= u ? (clearTimeout(a), a = null, s = c, o = e.apply(i, r)) : a || (a = setTimeout(l, u)), o
+			}
+		},
+		f = window.io();
 	return s.addListener("onContentChanged", function(e, t) {
-		p.emit("change", t)
+		p ? p = !1 : f.emit("change", t)
 	}), s.addListener("onReady", function() {
 		function t() {
 			o.addClass("hide"), r.removeClass("hide");
@@ -25939,9 +25952,9 @@ function() {
 			t && t != n.title && (n.title = t, s.onTitleChanged(n)), o.val(n.title), i.focus()
 		}
 		var i = e("#wmd-input");
-		d.selectFile(), window.fileMgr = d, p.on("change", function(e) {
-			console.log(d.currentFile), s.onContentChanged(d.currentFile, e)
-		});
+		d.selectFile(), window.fileMgr = d, f.on("change", h(function(e) {
+			p = !0, s.onContentChanged(d.currentFile, e)
+		}, 300));
 		var r = e(".file-title-navbar"),
 			o = e(".input-file-title");
 		e(".action-create-file").click(function() {

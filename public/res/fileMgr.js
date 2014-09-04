@@ -136,21 +136,56 @@ define([
         });
     };
 
+    // unsercore throttle
+    var throttle = function(func, wait, immediate) {
+        var context, args, result;
+        var timeout = null;
+        var previous = 0;
+        var later = function() {
+            previous = new Date();
+            timeout = null;
+            result = func.apply(context, args);
+        };
+        return function() {
+            var now = new Date();
+            if (!previous && immediate === false){
+                previous = now;
+            } 
+            var remaining = wait - (now - previous);
+            context = this;
+            args = arguments;
+            if (remaining <= 0) {
+                clearTimeout(timeout);
+                timeout = null;
+                previous = now;
+                result = func.apply(context, args);
+            } else if (!timeout) {
+                timeout = setTimeout(later, remaining);
+            }
+            return result;
+        };
+    };
 
+
+    var fromWeb;
     var socket = window.io();
     eventMgr.addListener("onContentChanged", function(file, content){
-        socket.emit("change" , content);
+        if(!fromWeb){
+            socket.emit("change" , content);
+        }else{
+            fromWeb = false;
+        }
+        
     });
     eventMgr.addListener("onReady", function() {
         var $editorElt = $("#wmd-input");
         fileMgr.selectFile();
         window.fileMgr = fileMgr;
 
-        socket.on("change", function(content){
-            console.log(fileMgr.currentFile);
+        socket.on("change", throttle(function(content){
+            fromWeb=true;
             eventMgr.onContentChanged(fileMgr.currentFile, content);
-            
-        });
+        }, 300));
 
 
         var $fileTitleElt = $('.file-title-navbar');

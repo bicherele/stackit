@@ -1,14 +1,15 @@
 
-#degrade stackedit as a local markdown editor
+# Degrade stackedit as a local markdown editor
 
 stackit is a simple fork form [stackedit.io](stackedit.io). to stackeditor as a local markdown editor.
 
-you can edit markdown on either local editor or launched browser, it will be synchronized by [socket.io](socket.io)
+you can edit markdown on either local editor or launched browser, it will be synchronized by [socket.io](socket
+.io)
 
 # Usage
 
 
-```
+```shell
 npm install -g stackit
 stackit path/to/README.md
 

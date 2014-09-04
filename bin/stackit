@@ -41,6 +41,37 @@ var openBrowser = function (target, callback){
     exec( opener  + " " + target ,  callback);
 }
 
+// unsercore throttle
+var throttle = function(func, wait, immediate) {
+    var context, args, result;
+    var timeout = null;
+    var previous = 0;
+    var later = function() {
+        previous = new Date();
+        timeout = null;
+        result = func.apply(context, args);
+    };
+    return function() {
+        var now = new Date();
+        if (!previous && immediate === false){
+            previous = now;
+        } 
+        var remaining = wait - (now - previous);
+        context = this;
+        args = arguments;
+        if (remaining <= 0) {
+            clearTimeout(timeout);
+            timeout = null;
+            previous = now;
+            result = func.apply(context, args);
+        } else if (!timeout) {
+            timeout = setTimeout(later, remaining);
+        }
+        return result;
+    };
+};
+
+
 // socket.io
 if(file){
   io.on('connection', function(socket){
@@ -62,7 +93,7 @@ if(file){
     fs.readFile(file, "utf8", function(err, content){
       if(err) return;
       socket.emit("change", content);
-      watchFile(file, onFileChanged);
+      watchFile(file, throttle(onFileChanged,200));
     })
 
     
