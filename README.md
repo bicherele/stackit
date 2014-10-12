@@ -25,9 +25,7 @@ stackit path/to/README.md
 2. people may like editing markdown local(like me), but live preview on web. 
 
 
-## WARNING
 
-haven't test on Windows now.
 
 
 ## License
