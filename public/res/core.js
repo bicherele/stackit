@@ -10,14 +10,14 @@ define([
 	"storage",
 	"settings",
 	"eventMgr",
-	"monetizejs",
 	"text!html/bodyIndex.html",
 	"text!html/bodyViewer.html",
 	"text!html/tooltipSettingsTemplate.html",
 	"text!html/tooltipSettingsPdfOptions.html",
 	"storage",
 	'pagedown'
-], function($, _, crel, editor, layout, constants, utils, storage, settings, eventMgr, MonetizeJS, bodyIndexHTML, bodyViewerHTML, settingsTemplateTooltipHTML, settingsPdfOptionsTooltipHTML) {
+], function($, _, crel, editor, layout, constants, utils, storage, settings, eventMgr, bodyIndexHTML, bodyViewerHTML, settingsTemplateTooltipHTML, settingsPdfOptionsTooltipHTML) {
+
 
 	var core = {};
 
@@ -323,54 +323,14 @@ define([
 		eventMgr.onReady();
 	};
 
-	var appId = 'ESTHdCYOi18iLhhO';
-	var monetize = new MonetizeJS({
-		applicationID: appId
-	});
-	var $alerts = $();
 
-	function isSponsor(payments) {
-		var result = payments && payments.app == appId && (
-			(payments.chargeOption && payments.chargeOption.alias == 'once') ||
-			(payments.subscriptionOption && payments.subscriptionOption.alias == 'yearly'));
-		eventMgr.isSponsor = result;
-		return result;
-	}
 
-	function removeAlerts() {
-		$alerts.remove();
-		$alerts = $();
-	}
 
-	function performPayment() {
-		monetize.getPayments({
-			pricingOptions: [
-				'once',
-				'yearly'
-			]
-		}, function(err, payments) {
-			if(isSponsor(payments)) {
-				eventMgr.onMessage('Thank you for sponsoring StackEdit!');
-				removeAlerts();
-			}
-		});
-	}
 
 	var checkPayment = _.debounce(function() {
 		if(isOffline) {
 			return;
 		}
-		monetize.getPaymentsImmediate(function(err, payments) {
-			removeAlerts();
-			if(!isSponsor(payments)) {
-				_.each(document.querySelectorAll('.modal-body'), function(modalBodyElt) {
-					var $elt = $('<div class="alert alert-danger">Please consider <a href="#">sponsoring StackEdit</a> for $5/year (or <a href="#">sign in</a> if you\'re already a sponsor).</div>');
-					$elt.find('a').click(performPayment);
-					modalBodyElt.insertBefore($elt[0], modalBodyElt.firstChild);
-					$alerts = $alerts.add($elt);
-				});
-			}
-		});
 	}, 3000);
 
 	eventMgr.addListener('onOfflineChanged', checkPayment);

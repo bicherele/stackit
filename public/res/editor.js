@@ -1093,15 +1093,8 @@ define([
 	}
 
 	var escape = (function() {
-		var entityMap = {
-			"&": "&amp;",
-			"<": "&lt;",
-			"\u00a0": ' '
-		};
 		return function(str) {
-			return str.replace(/[&<\u00a0]/g, function(s) {
-				return entityMap[s];
-			});
+			return str;
 		};
 	})();
 

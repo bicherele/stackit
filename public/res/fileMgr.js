@@ -167,24 +167,18 @@ define([
     // };
 
 
-    var fromWeb;
     var socket = window.io();
-    eventMgr.addListener("onContentChanged", function(file, content){
-        if(!fromWeb){
+    eventMgr.addListener("onContentChanged", function(file, content, fromWeb){
+        if(!fromWeb) {
             socket.emit("change" , content);
-        }else{
-            fromWeb = false;
         }
-        
     });
     eventMgr.addListener("onReady", function() {
         var $editorElt = $("#wmd-input");
         fileMgr.selectFile();
-        window.fileMgr = fileMgr;
 
         socket.on("change", function(content){
-            fromWeb=true;
-            eventMgr.onContentChanged(fileMgr.currentFile, content);
+            eventMgr.onContentChanged(fileMgr.currentFile, content, true);
         });
 
 
